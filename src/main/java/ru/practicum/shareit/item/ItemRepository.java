@@ -22,7 +22,7 @@ public class ItemRepository {
         return items.get(id);
     }
 
-    public ItemDto create(ItemDto item, User owner) {
+    public Item create(ItemDto item, User owner) {
         curId++;
         Item itemToSave = Item.builder()
                 .id(curId)
@@ -32,8 +32,7 @@ public class ItemRepository {
                 .available(item.getAvailable())
                 .build();
         items.put(curId, itemToSave);
-        item.setId(curId);
-        return item;
+        return itemToSave;
     }
 
     public Item update(ItemDto updatedItem, long id) {
@@ -50,5 +49,14 @@ public class ItemRepository {
         items.replace(id, existingItem);
         existingItem.setId(id);
         return existingItem;
-     }
+    }
+
+    public Collection<Item> search(String text) {
+            Collection<Item> correctItems = items.values().stream()
+                    .filter(item -> (item.getDescription().toLowerCase().contains(text.toLowerCase()) ||
+                            item.getName().toLowerCase().contains(text.toLowerCase())))
+                    .filter(Item::isAvailable)
+                    .toList();
+            return correctItems;
+    }
 }

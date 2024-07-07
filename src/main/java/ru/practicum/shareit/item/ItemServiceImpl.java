@@ -32,7 +32,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto create(ItemDto item, long userId) {
         User owner = Optional.ofNullable(userService.get(userId)).orElseThrow(NoSuchDataException::new);
-        return itemRepository.create(item, owner);
+        return ItemMapper.toItemDto(itemRepository.create(item, owner));
     }
 
     @Override
@@ -46,6 +46,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Collection<ItemDto> search(String text) {
-        return List.of();
+        if (text.isBlank()) {
+            return List.of();
+        } else {
+            return itemRepository.search(text).stream().map(ItemMapper::toItemDto).toList();
+        }
     }
 }
