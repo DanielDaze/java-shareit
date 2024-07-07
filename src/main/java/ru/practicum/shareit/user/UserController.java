@@ -15,40 +15,36 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-    private final UserService service;
+    private final UserService userService;
 
     @GetMapping
     public Collection<User> getAll() {
         log.info("GET /users");
-        Collection<User> users = service.getAll();
-        return users;
+        return userService.getAll();
     }
 
     @GetMapping("/{id}")
     public User get(@PathVariable long id) {
         log.info("GET /users/{}", id);
-        User user = service.get(id);
-        return user;
+        return userService.get(id);
     }
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.info("POST /users <- {}", user);
-        User userToReturn = service.create(user);
-        return userToReturn;
+        return userService.create(user);
     }
 
     @PatchMapping("/{id}")
     public User update(@PathVariable long id, @Valid @RequestBody User user) {
         log.info("PATCH /users/{} <- {}", id, user);
-        User userToReturn = service.update(id, user);
-        return userToReturn;
+        return userService.update(id, user);
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id) {
         log.info("DELETE /users/{}", id);
-        service.delete(id);
+        userService.delete(id);
         return "Пользователь успешно удален!";
     }
 }
