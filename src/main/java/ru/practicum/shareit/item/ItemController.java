@@ -20,7 +20,7 @@ import java.util.Collection;
 @Validated
 public class ItemController {
     private final ItemService itemService;
-    private final static String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @GetMapping
     public Collection<ItemDto> getAllByUserId(@RequestHeader(USER_ID_HEADER) long userId) {
