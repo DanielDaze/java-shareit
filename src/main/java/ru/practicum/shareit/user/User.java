@@ -10,10 +10,10 @@ import ru.practicum.shareit.Marker.Create;
  */
 @Data
 public class User {
-    long id;
+    private long id;
     @NotBlank(groups = Create.class)
-    String name;
+    private String name;
     @Email
     @NotBlank(groups = Create.class)
-    String email;
+    private String email;
 }
