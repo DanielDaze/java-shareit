@@ -7,6 +7,8 @@ import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.shareit.booking.BookingStatus.WAITING;
+
 /**
  * TODO Sprint add-bookings.
  */
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "start_time")
     private LocalDateTime start;
@@ -34,5 +36,5 @@ public class Booking {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private BookingStatus status;
+    private BookingStatus status = WAITING;
 }
