@@ -29,7 +29,7 @@ public class Item {
     private String description;
 
     @Column(name = "is_available")
-    private boolean available;
+    private Boolean available;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

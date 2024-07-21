@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.Marker.Create;
-import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.NoSuchDataException;
 
 import java.util.Collection;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service

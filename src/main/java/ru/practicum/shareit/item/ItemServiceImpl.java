@@ -35,15 +35,26 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(ItemDto item, long userId) {
         User owner = Optional.of(userService.get(userId)).orElseThrow(NoSuchDataException::new);
         Item itemToSave = ItemMapper.toItem(item);
-        return ItemMapper.toItemDto(itemRepository.create(item, owner));
+        itemToSave.setOwner(owner);
+        return ItemMapper.toItemDto(itemRepository.save(itemToSave));
     }
 
     @Override
     public ItemDto update(ItemDto item, long id, long userId) {
-        if (itemRepository.get(id).getOwner().getId() != userId) {
+        Item existingItem = itemRepository.findById(id).get();
+        if (existingItem.getOwner().getId() != userId) {
             throw new WrongUserException("Вы не являетесь владельцем этого товара!");
         } else {
-            return ItemMapper.toItemDto(itemRepository.update(item, id));
+            if (item.getName() != null) {
+                existingItem.setName(item.getName());
+            }
+            if (item.getAvailable() != null) {
+                existingItem.setAvailable(item.getAvailable());
+            }
+            if (item.getDescription() != null) {
+                existingItem.setDescription(item.getDescription());
+            }
+            return ItemMapper.toItemDto(itemRepository.save(existingItem));
         }
     }
 
@@ -52,7 +63,9 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return List.of();
         } else {
-            return itemRepository.search(text).stream().map(ItemMapper::toItemDto).toList();
+            return itemRepository.findAllByAvailableTrueAndDescriptionContainingIgnoreCase(text)
+                    .stream()
+                    .map(ItemMapper::toItemDto).toList();
         }
     }
 }
