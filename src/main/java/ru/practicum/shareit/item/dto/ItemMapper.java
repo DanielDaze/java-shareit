@@ -6,4 +6,12 @@ public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
         return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.isAvailable());
     }
+
+    public static Item toItem(ItemDto dto) {
+        return Item.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .available(dto.getAvailable())
+                .build();
+    }
 }

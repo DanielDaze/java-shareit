@@ -27,20 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Validated(Create.class)
     public User create(@Valid User user) {
-        List<String> emails = userRepository.findAll().stream().map(User::getEmail).toList();
-        if (emails.contains(user.getEmail())) {
-            throw new DuplicatedDataException("Пользователь с такой почтой уже зарегистрирован");
-        } else {
-            return userRepository.save(user);
-        }
+        return userRepository.save(user);
     }
 
     public User update(long id, User user) {
-        List<String> emails = userRepository.findAll().stream().filter(curUser -> curUser.getId() != id).map(User::getEmail).toList();
-        if (emails.contains(user.getEmail())) {
-            throw new DuplicatedDataException("Пользователь с таким почтовым адресом уже создан");
-        }
-        
         User foundUser = userRepository.findById(id).orElseThrow(NoSuchDataException::new);
         if (user.getName() == null) {
             user.setName(foundUser.getName());

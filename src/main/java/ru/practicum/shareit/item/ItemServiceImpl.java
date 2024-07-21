@@ -6,6 +6,7 @@ import ru.practicum.shareit.exception.NoSuchDataException;
 import ru.practicum.shareit.exception.WrongUserException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
@@ -21,17 +22,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Collection<ItemDto> getAllByUserId(long userId) {
-        return itemRepository.getAllByUserId(userId).stream().map(ItemMapper::toItemDto).toList();
+        return itemRepository.findAllByOwnerId(userId).stream().map(ItemMapper::toItemDto).toList();
     }
 
     @Override
     public ItemDto get(long id) {
-        return ItemMapper.toItemDto(itemRepository.get(id));
+        Item item = itemRepository.findById(id).orElseThrow(NoSuchDataException::new);
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto create(ItemDto item, long userId) {
-        User owner = Optional.ofNullable(userService.get(userId)).orElseThrow(NoSuchDataException::new);
+        User owner = Optional.of(userService.get(userId)).orElseThrow(NoSuchDataException::new);
+        Item itemToSave = ItemMapper.toItem(item);
         return ItemMapper.toItemDto(itemRepository.create(item, owner));
     }
 
