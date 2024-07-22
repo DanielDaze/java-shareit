@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.DuplicatedDataException;
-import ru.practicum.shareit.exception.NoSuchDataException;
-import ru.practicum.shareit.exception.WrongUserException;
+import ru.practicum.shareit.exception.*;
 
 @RestControllerAdvice
 @Slf4j
@@ -38,6 +36,20 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String handleWrongUserException(final WrongUserException e) {
         log.error("Пользователь не имеет доступ к изменяемому объекту");
+        return e.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleItemUnavailableException(final ItemUnavailableException e) {
+        log.error("Пользователь попытался забронировать предмет, который недоступен!");
+        return e.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleDateConflictException(final DateConflictException e) {
+        log.error("Пользователь неверно ввел даты брони!");
         return e.getMessage();
     }
 }
