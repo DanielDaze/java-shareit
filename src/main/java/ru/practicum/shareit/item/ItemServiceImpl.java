@@ -12,7 +12,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final BookingRepository bookingRepository;
-    private final UserRepository userRepository;
 
     @Override
     public Collection<ItemDto> getAllByUserId(long userId) {
@@ -36,12 +34,11 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(id).orElseThrow(NoSuchDataException::new);
         User user = Optional.of(userService.get(userId)).orElseThrow(NoSuchDataException::new);
         User owner = item.getOwner();
-        List<ItemDto> items = List.of(ItemMapper.toItemDto(item));
+        ItemDto itemDto = ItemMapper.toItemDto(item);
         if (user.getId()!= owner.getId()) {
-            return items.getFirst();
+            return itemDto;
         }
-
-        return setBookings(items).getFirst();
+        return setBookings(List.of(itemDto)).getFirst();
     }
 
     @Override
@@ -84,16 +81,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private List<ItemDto> setBookings(List<ItemDto> items) {
+        LocalDateTime now = LocalDateTime.now();
         for (ItemDto item : items) {
-            LocalDateTime now = LocalDateTime.now();
-            List<Booking> nextBookings = bookingRepository.findAllByItem_IdAndEndAfterAndStatusOrderByStartAsc(item.getId(), now, BookingStatus.APPROVED);
-            if (!nextBookings.isEmpty()) {
-                item.setNextBooking(BookingMapper.toBookingInfo(nextBookings.getFirst()));
-            }
-            List<Booking> lastBookings = bookingRepository.findAllByItem_IdAndEndBeforeAndStatusOrderByEndDesc(item.getId(), now, BookingStatus.APPROVED);
-            if (!lastBookings.isEmpty()) {
-                item.setLastBooking(BookingMapper.toBookingInfo(nextBookings.getFirst()));
-            }
+            Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItem_IdAndEndAfterAndStatusOrderByEndAsc(
+                    item.getId(), now, BookingStatus.APPROVED);
+            nextBooking.ifPresent(booking -> item.setNextBooking(BookingMapper.toBookingInfo(booking)));
+            Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItem_IdAndEndBeforeAndStatusOrderByEndDesc(
+                    item.getId(), now, BookingStatus.APPROVED);
+            lastBooking.ifPresent(booking -> item.setLastBooking(BookingMapper.toBookingInfo(booking)));
         }
         return items;
     }
