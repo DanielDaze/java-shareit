@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final BookingRepository bookingRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Collection<ItemDto> getAllByUserId(long userId) {
@@ -30,9 +32,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto get(long id) {
+    public ItemDto get(long id, long userId) {
         Item item = itemRepository.findById(id).orElseThrow(NoSuchDataException::new);
+        User user = Optional.of(userService.get(userId)).orElseThrow(NoSuchDataException::new);
+        User owner = item.getOwner();
         List<ItemDto> items = List.of(ItemMapper.toItemDto(item));
+        if (user.getId()!= owner.getId()) {
+            return items.getFirst();
+        }
+
         return setBookings(items).getFirst();
     }
 

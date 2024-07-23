@@ -9,7 +9,7 @@ public interface ItemService {
     @GetMapping
     public Collection<ItemDto> getAllByUserId(long userId);
 
-    public ItemDto get(long id);
+    public ItemDto get(long id, long userId);
 
     public ItemDto create(ItemDto item, long userId);
 
