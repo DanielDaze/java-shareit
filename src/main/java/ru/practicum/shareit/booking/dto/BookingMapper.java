@@ -13,4 +13,15 @@ public class BookingMapper {
         booking.setEnd(dto.getEnd());
         return booking;
     }
+
+    public static BookingInfo toBookingInfo(Booking booking) {
+        BookingInfo bookingInfo = new BookingInfo();
+        bookingInfo.setId(booking.getId());
+        bookingInfo.setStart(booking.getStart());
+        bookingInfo.setEnd(booking.getEnd());
+        bookingInfo.setStatus(booking.getStatus());
+        bookingInfo.setItemId(booking.getItem().getId());
+        bookingInfo.setBookerId(booking.getBooker().getId());
+        return bookingInfo;
+    }
 }

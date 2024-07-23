@@ -7,7 +7,6 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.exception.DateConflictException;
 import ru.practicum.shareit.exception.ItemUnavailableException;
 import ru.practicum.shareit.exception.NoSuchDataException;
-import ru.practicum.shareit.exception.WrongUserException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.exception.NoSuchDataException;
 import ru.practicum.shareit.exception.WrongUserException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -79,11 +80,11 @@ public class ItemServiceImpl implements ItemService {
             LocalDateTime now = LocalDateTime.now();
             List<Booking> nextBookings = bookingRepository.findAllByItem_IdAndEndAfterAndStatusOrderByStartAsc(item.getId(), now, BookingStatus.APPROVED);
             if (!nextBookings.isEmpty()) {
-                item.setNextBooking(nextBookings.getFirst());
+                item.setNextBooking(BookingMapper.toBookingInfo(nextBookings.getFirst()));
             }
             List<Booking> lastBookings = bookingRepository.findAllByItem_IdAndEndBeforeAndStatusOrderByEndDesc(item.getId(), now, BookingStatus.APPROVED);
             if (!lastBookings.isEmpty()) {
-                item.setLastBooking(lastBookings.getFirst());
+                item.setLastBooking(BookingMapper.toBookingInfo(nextBookings.getFirst()));
             }
         }
         return items;

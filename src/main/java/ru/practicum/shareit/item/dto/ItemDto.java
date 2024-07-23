@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.Marker.Create;
-import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.dto.BookingInfo;
 
 /**
  * TODO Sprint add-controllers.
@@ -25,9 +25,9 @@ public class ItemDto {
     @NotNull(groups = Create.class)
     private Boolean available;
 
-    private Booking lastBooking;
+    private BookingInfo lastBooking;
 
-    private Booking nextBooking;
+    private BookingInfo nextBooking;
 
     public ItemDto(long id, String name, String description, Boolean available) {
         this.id = id;
