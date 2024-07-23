@@ -1,7 +1,8 @@
-package ru.practicum.shareit.comment;
+package ru.practicum.shareit.item.comment;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "COMMENTS")
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +29,5 @@ public class Comment {
     private User author;
 
     @Column(name = "creation_date")
-    private LocalDateTime created;
+    private LocalDateTime created = LocalDateTime.now();
 }

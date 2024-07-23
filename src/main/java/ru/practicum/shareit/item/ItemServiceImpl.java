@@ -6,12 +6,17 @@ import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.exception.ItemUnavailableException;
 import ru.practicum.shareit.exception.NoSuchDataException;
 import ru.practicum.shareit.exception.WrongUserException;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
@@ -23,10 +28,20 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Collection<ItemDto> getAllByUserId(long userId) {
-        return setBookings(itemRepository.findAllByOwnerId(userId).stream().map(ItemMapper::toItemDto).toList());
+        List<ItemDto> items = setBookings(itemRepository.findAllByOwnerId(userId).stream().map(ItemMapper::toItemDto).toList());
+        for (ItemDto item : items) {
+            List<Comment> comments = commentRepository.findAllByItem_Id(item.getId());
+            if (!comments.isEmpty()) {
+
+                item.setComments(comments);
+            }
+        }
+        return items;
     }
 
     @Override
@@ -37,6 +52,10 @@ public class ItemServiceImpl implements ItemService {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         if (user.getId()!= owner.getId()) {
             return itemDto;
+        }
+        List<Comment> comments = commentRepository.findAllByItem_Id(id);
+        if (!comments.isEmpty()) {
+            itemDto.setComments(comments);
         }
         return setBookings(List.of(itemDto)).getFirst();
     }
@@ -91,5 +110,25 @@ public class ItemServiceImpl implements ItemService {
             lastBooking.ifPresent(booking -> item.setLastBooking(BookingMapper.toBookingInfo(booking)));
         }
         return items;
+    }
+
+    @Override
+    public Comment addComment(CommentDto comment, long itemId, long userId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
+        Item item = itemRepository.findById(userId).orElseThrow(NoSuchDataException::new);
+        if (validateAuthor(userId, itemId)) {
+            Comment commentToSave = new Comment();
+            commentToSave.setItem(item);
+            commentToSave.setAuthor(user);
+            commentToSave.setText(comment.getText());
+            return commentRepository.save(commentToSave);
+        } else {
+            throw new ItemUnavailableException("Вы не пользовались этим товаром");
+        }
+    }
+
+    private boolean validateAuthor(long userId, long itemId) {
+        List<Booking> userBookings = bookingRepository.findAllByBookerIdAndItem_IdAndStatusAndEndBefore(userId, itemId, BookingStatus.APPROVED, LocalDateTime.now());
+        return !userBookings.isEmpty();
     }
 }

@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.Marker.Create;
 import ru.practicum.shareit.booking.dto.BookingInfo;
+import ru.practicum.shareit.item.comment.Comment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
@@ -28,6 +32,8 @@ public class ItemDto {
     private BookingInfo lastBooking;
 
     private BookingInfo nextBooking;
+
+    private List<Comment> comments = new ArrayList<>();
 
     public ItemDto(long id, String name, String description, Boolean available) {
         this.id = id;

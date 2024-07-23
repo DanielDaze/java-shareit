@@ -1,19 +1,23 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.Collection;
 
 public interface ItemService {
     @GetMapping
-    public Collection<ItemDto> getAllByUserId(long userId);
+    Collection<ItemDto> getAllByUserId(long userId);
 
-    public ItemDto get(long id, long userId);
+    ItemDto get(long id, long userId);
 
-    public ItemDto create(ItemDto item, long userId);
+    ItemDto create(ItemDto item, long userId);
 
-    public ItemDto update(ItemDto item, long id, long userId);
+    ItemDto update(ItemDto item, long id, long userId);
 
-    public Collection<ItemDto> search(String text);
+    Collection<ItemDto> search(String text);
+
+    Comment addComment(CommentDto comment, long itemId, long userId);
 }
