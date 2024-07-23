@@ -7,49 +7,56 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exception.*;
+import ru.practicum.shareit.exception.Error;
 
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleMethodArgumentNotValidException(final ConstraintViolationException e) {
+    public Error handleMethodArgumentNotValidException(final ConstraintViolationException e) {
         log.error("Пользователь передал неверные данные для создания объекта");
-        return e.getMessage();
+        return new Error(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String handleDuplicatedDataException(final DuplicatedDataException e) {
+    public Error handleDuplicatedDataException(final DuplicatedDataException e) {
         log.error("Во время регистрации пользователь передал данные, которые были использованы до него");
-        return e.getMessage();
+        return new Error(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNoSuchDataException(final NoSuchDataException e) {
+    public Error handleNoSuchDataException(final NoSuchDataException e) {
         log.error("Пользователь попытался найти несуществующий объект");
-        return e.getMessage();
+        return new Error(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String handleWrongUserException(final WrongUserException e) {
+    public Error handleWrongUserException(final WrongUserException e) {
         log.error("Пользователь не имеет доступ к изменяемому объекту");
-        return e.getMessage();
+        return new Error(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleItemUnavailableException(final ItemUnavailableException e) {
+    public Error handleItemUnavailableException(final ItemUnavailableException e) {
         log.error("Пользователь попытался забронировать предмет, который недоступен!");
-        return e.getMessage();
+        return new Error(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleDateConflictException(final DateConflictException e) {
+    public Error handleDateConflictException(final DateConflictException e) {
         log.error("Пользователь неверно ввел даты брони!");
-        return e.getMessage();
+        return new Error(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleIllegalArgumentException(final IllegalArgumentException e) {
+        return new Error("Unknown state: UNSUPPORTED_STATUS");
     }
 }

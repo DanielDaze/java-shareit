@@ -30,7 +30,7 @@ public class BookingServiceImpl implements BookingService {
         User user = userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
         Item item = itemRepository.findById(dto.getItemId()).orElseThrow(NoSuchDataException::new);
         if (item.getOwner().getId() == userId) {
-            throw new WrongUserException("Вы являетесь владельцем этого товара!");
+            throw new NoSuchDataException("Вы являетесь владельцем этого товара!");
         }
         if (item.getAvailable() == null || !item.getAvailable()) {
             throw new ItemUnavailableException("Предмет недоступен для бронирования!");
@@ -47,7 +47,10 @@ public class BookingServiceImpl implements BookingService {
     public Booking approve(long bookingId, boolean approved, long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NoSuchDataException::new);
         if (booking.getItem().getOwner().getId() != userId) {
-            throw new WrongUserException("Вы не можете изменить статус этой брони!");
+            throw new NoSuchDataException("Вы не можете изменить статус этой брони!");
+        }
+        if (booking.getStatus() == BookingStatus.APPROVED) {
+            throw new ItemUnavailableException("Вы уже подтвердили эту бронь!");
         }
         if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
@@ -63,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
         userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
         List<Long> correctIds = List.of(booking.getItem().getOwner().getId(), booking.getBooker().getId());
         if (!correctIds.contains(userId)) {
-            throw new WrongUserException("Вы не можете посмотреть информацию об этой брони!");
+            throw new NoSuchDataException("Вы не можете посмотреть информацию об этой брони!");
         }
         return booking;
     }
