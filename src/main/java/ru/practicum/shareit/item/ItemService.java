@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -19,5 +18,5 @@ public interface ItemService {
 
     Collection<ItemDto> search(String text);
 
-    Comment addComment(CommentDto comment, long itemId, long userId);
+    CommentDto addComment(CommentDto comment, long itemId, long userId);
 }

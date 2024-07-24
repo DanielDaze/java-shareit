@@ -90,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findAllByBookerIdAndEndBeforeOrderByIdDesc(userId, LocalDateTime.now());
             } case CURRENT -> {
                 LocalDateTime now = LocalDateTime.now();
-                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByIdDesc(userId, now, now);
+                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByIdAsc(userId, now, now);
             } case FUTURE -> {
                 LocalDateTime now = LocalDateTime.now();
                 return bookingRepository.findAllByBookerIdAndStartAfterOrderByIdDesc(userId, now);

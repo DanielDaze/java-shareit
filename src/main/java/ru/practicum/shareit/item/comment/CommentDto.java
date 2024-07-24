@@ -10,6 +10,8 @@ public class CommentDto {
     @NotEmpty
     private String text;
 
+    private long id;
+
     private long itemId;
 
     private String authorName;

@@ -7,9 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.Marker.Create;
 import ru.practicum.shareit.booking.dto.BookingInfo;
-import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public class ItemDto {
 
     private BookingInfo nextBooking;
 
-    private List<Comment> comments = new ArrayList<>();
+    private List<CommentDto> comments;
 
     public ItemDto(long id, String name, String description, Boolean available) {
         this.id = id;

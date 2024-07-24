@@ -11,6 +11,7 @@ import ru.practicum.shareit.exception.NoSuchDataException;
 import ru.practicum.shareit.exception.WrongUserException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
@@ -35,11 +36,8 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemDto> getAllByUserId(long userId) {
         List<ItemDto> items = setBookings(itemRepository.findAllByOwnerId(userId).stream().map(ItemMapper::toItemDto).toList());
         for (ItemDto item : items) {
-            List<Comment> comments = commentRepository.findAllByItem_Id(item.getId());
-            if (!comments.isEmpty()) {
-
-                item.setComments(comments);
-            }
+            List<CommentDto> comments = commentRepository.findAllByItemId(item.getId()).stream().map(CommentMapper::toCommentDto).toList();
+            item.setComments(comments);
         }
         return items;
     }
@@ -50,12 +48,10 @@ public class ItemServiceImpl implements ItemService {
         User user = Optional.of(userService.get(userId)).orElseThrow(NoSuchDataException::new);
         User owner = item.getOwner();
         ItemDto itemDto = ItemMapper.toItemDto(item);
-        if (user.getId()!= owner.getId()) {
+        List<CommentDto> comments = commentRepository.findAllByItemId(id).stream().map(CommentMapper::toCommentDto).toList();
+        itemDto.setComments(comments);
+        if (user.getId() != owner.getId()) {
             return itemDto;
-        }
-        List<Comment> comments = commentRepository.findAllByItem_Id(id);
-        if (!comments.isEmpty()) {
-            itemDto.setComments(comments);
         }
         return setBookings(List.of(itemDto)).getFirst();
     }
@@ -102,33 +98,30 @@ public class ItemServiceImpl implements ItemService {
     private List<ItemDto> setBookings(List<ItemDto> items) {
         LocalDateTime now = LocalDateTime.now();
         for (ItemDto item : items) {
-            Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItem_IdAndEndAfterAndStatusOrderByEndAsc(
-                    item.getId(), now, BookingStatus.APPROVED);
-            nextBooking.ifPresent(booking -> item.setNextBooking(BookingMapper.toBookingInfo(booking)));
             Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItem_IdAndEndBeforeAndStatusOrderByEndDesc(
                     item.getId(), now, BookingStatus.APPROVED);
             lastBooking.ifPresent(booking -> item.setLastBooking(BookingMapper.toBookingInfo(booking)));
+            Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItem_IdAndEndAfterAndStatusOrderByEndAsc(
+                    item.getId(), now, BookingStatus.APPROVED);
+            nextBooking.ifPresent(booking -> item.setNextBooking(BookingMapper.toBookingInfo(booking)));
         }
         return items;
     }
 
     @Override
-    public Comment addComment(CommentDto comment, long itemId, long userId) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
-        Item item = itemRepository.findById(userId).orElseThrow(NoSuchDataException::new);
-        if (validateAuthor(userId, itemId)) {
-            Comment commentToSave = new Comment();
-            commentToSave.setItem(item);
-            commentToSave.setAuthor(user);
-            commentToSave.setText(comment.getText());
-            return commentRepository.save(commentToSave);
-        } else {
-            throw new ItemUnavailableException("Вы не пользовались этим товаром");
-        }
-    }
+    public CommentDto addComment(CommentDto comment, long itemId, long userId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(NoSuchDataException::new);
+        User author = userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
+        Booking booking = bookingRepository.findTop1BookingByItemIdAndBookerIdAndEndBeforeAndStatusOrderByEndDesc(
+                itemId, userId, LocalDateTime.now(), BookingStatus.APPROVED).orElseThrow(
+                () -> new ItemUnavailableException("Вы не пользовались этим товаром!"));
 
-    private boolean validateAuthor(long userId, long itemId) {
-        List<Booking> userBookings = bookingRepository.findAllByBookerIdAndItem_IdAndStatusAndEndBefore(userId, itemId, BookingStatus.APPROVED, LocalDateTime.now());
-        return !userBookings.isEmpty();
+        Comment commentToSave = new Comment();
+        commentToSave.setItem(item);
+        commentToSave.setAuthor(author);
+        commentToSave.setCreated(LocalDateTime.now());
+        commentToSave.setText(comment.getText());
+        Comment saved = commentRepository.save(commentToSave);
+        return CommentMapper.toCommentDto(saved);
     }
 }
