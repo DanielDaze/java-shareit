@@ -98,10 +98,10 @@ public class ItemServiceImpl implements ItemService {
     private List<ItemDto> setBookings(List<ItemDto> items) {
         LocalDateTime now = LocalDateTime.now();
         for (ItemDto item : items) {
-            Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItem_IdAndEndBeforeAndStatusOrderByEndDesc(
+            Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItem_IdAndStartBeforeAndStatusOrderByEndDesc(
                     item.getId(), now, BookingStatus.APPROVED);
             lastBooking.ifPresent(booking -> item.setLastBooking(BookingMapper.toBookingInfo(booking)));
-            Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItem_IdAndEndAfterAndStatusOrderByEndAsc(
+            Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItem_IdAndStartAfterAndStatusOrderByEndAsc(
                     item.getId(), now, BookingStatus.APPROVED);
             nextBooking.ifPresent(booking -> item.setNextBooking(BookingMapper.toBookingInfo(booking)));
         }
@@ -112,7 +112,7 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(CommentDto comment, long itemId, long userId) {
         Item item = itemRepository.findById(itemId).orElseThrow(NoSuchDataException::new);
         User author = userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
-        Booking booking = bookingRepository.findTop1BookingByItemIdAndBookerIdAndEndBeforeAndStatusOrderByEndDesc(
+        bookingRepository.findTop1BookingByItemIdAndBookerIdAndEndBeforeAndStatusOrderByEndDesc(
                 itemId, userId, LocalDateTime.now(), BookingStatus.APPROVED).orElseThrow(
                 () -> new ItemUnavailableException("Вы не пользовались этим товаром!"));
 
