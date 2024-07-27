@@ -45,7 +45,7 @@ public class ItemController {
     @PatchMapping("/{id}")
     public ItemDto update(@RequestBody ItemDto item, @PathVariable("id") long id,
                           @RequestHeader(name = USER_ID_HEADER) long userId) {
-        log.info("PATCH /items/{} <- {} with userId {}", item, id, userId);
+        log.info("PATCH /items/{} <- {} with userId {}", id, item, userId);
         return itemService.update(item, id, userId);
     }
 
@@ -58,8 +58,6 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@Valid @RequestBody CommentDto comment, @PathVariable long itemId, @RequestHeader(USER_ID_HEADER) long userId) {
         log.info("POST /items/{}/comment", itemId);
-        CommentDto commentDto = itemService.addComment(comment, itemId, userId);
-        log.info("POST /items/{}/comment -> {}", itemId, commentDto);
-        return commentDto;
+        return itemService.addComment(comment, itemId, userId);
     }
 }

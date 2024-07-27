@@ -1,10 +1,7 @@
 package ru.practicum.shareit.item.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
@@ -33,9 +30,11 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @ToString.Exclude
     private User owner;
 
     @ManyToOne
     @JoinColumn(name = "request_id")
+    @ToString.Exclude
     private ItemRequest request;
 }

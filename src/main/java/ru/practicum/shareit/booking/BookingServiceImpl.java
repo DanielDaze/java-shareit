@@ -1,7 +1,9 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.exception.DateConflictException;
@@ -18,12 +20,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public Booking create(BookingDto dto, long userId) {
         Booking bookingToSave = BookingMapper.toBooking(dto);
         User user = userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
@@ -39,10 +43,13 @@ public class BookingServiceImpl implements BookingService {
         }
         bookingToSave.setBooker(user);
         bookingToSave.setItem(item);
-        return bookingRepository.save(bookingToSave);
+        Booking bookingToReturn =  bookingRepository.save(bookingToSave);
+        log.info("POST /bookings -> {} ", bookingToReturn);
+        return bookingToReturn;
     }
 
     @Override
+    @Transactional
     public Booking approve(long bookingId, boolean approved, long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NoSuchDataException::new);
         if (booking.getItem().getOwner().getId() != userId) {
@@ -56,10 +63,13 @@ public class BookingServiceImpl implements BookingService {
         } else {
             booking.setStatus(BookingStatus.REJECTED);
         }
-        return bookingRepository.save(booking);
+        Booking bookingToReturn = bookingRepository.save(booking);
+        log.info("PATCH /bookings/{} -> {}", bookingId, bookingToReturn);
+        return bookingToReturn;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Booking get(long bookingId, long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NoSuchDataException::new);
         userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
@@ -67,19 +77,26 @@ public class BookingServiceImpl implements BookingService {
         if (!correctIds.contains(userId)) {
             throw new NoSuchDataException("Вы не можете посмотреть информацию об этой брони!");
         }
+        log.info("GET /bookings/{} -> {}", bookingId, booking);
         return booking;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<Booking> getByBookerId(long userId, BookingSearch state) {
         userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
-        return searchByBooker(userId, state);
+        Collection<Booking> bookingsToReturn = searchByBooker(userId, state);
+        log.info("GET /bookings -> {}", bookingsToReturn);
+        return bookingsToReturn;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<Booking> getByOwnerId(long userId, BookingSearch state) {
         userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
-        return searchByOwner(userId, state);
+        Collection<Booking> bookingsToReturn = searchByOwner(userId, state);
+        log.info("GET /bookings/owner -> {}", bookingsToReturn);
+        return bookingsToReturn;
     }
 
     private Collection<Booking> searchByBooker(long userId, BookingSearch state) {

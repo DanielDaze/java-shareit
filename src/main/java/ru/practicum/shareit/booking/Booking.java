@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -28,10 +29,12 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @ToString.Exclude
     private Item item;
 
     @ManyToOne
     @JoinColumn(name = "booker_id")
+    @ToString.Exclude
     private User booker;
 
     @Column(name = "status")

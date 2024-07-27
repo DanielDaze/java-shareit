@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -25,6 +27,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
@@ -33,16 +36,19 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<ItemDto> getAllByUserId(long userId) {
         List<ItemDto> items = setBookings(itemRepository.findAllByOwnerId(userId).stream().map(ItemMapper::toItemDto).toList());
         for (ItemDto item : items) {
             List<CommentDto> comments = commentRepository.findAllByItemId(item.getId()).stream().map(CommentMapper::toCommentDto).toList();
             item.setComments(comments);
         }
+        log.info("GET /items -> {}", items);
         return items;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemDto get(long id, long userId) {
         Item item = itemRepository.findById(id).orElseThrow(NoSuchDataException::new);
         User user = Optional.of(userService.get(userId)).orElseThrow(NoSuchDataException::new);
@@ -53,18 +59,24 @@ public class ItemServiceImpl implements ItemService {
         if (user.getId() != owner.getId()) {
             return itemDto;
         }
-        return setBookings(List.of(itemDto)).getFirst();
+        ItemDto itemToReturn = setBookings(List.of(itemDto)).getFirst();
+        log.info("GET /items/{} -> {}", id, itemToReturn);
+        return itemToReturn;
     }
 
     @Override
+    @Transactional
     public ItemDto create(ItemDto item, long userId) {
         User owner = Optional.of(userService.get(userId)).orElseThrow(NoSuchDataException::new);
         Item itemToSave = ItemMapper.toItem(item);
         itemToSave.setOwner(owner);
-        return ItemMapper.toItemDto(itemRepository.save(itemToSave));
+        ItemDto itemToReturn =  ItemMapper.toItemDto(itemRepository.save(itemToSave));
+        log.info("POST /items -> {}", itemToReturn);
+        return itemToReturn;
     }
 
     @Override
+    @Transactional
     public ItemDto update(ItemDto item, long id, long userId) {
         Item existingItem = itemRepository.findById(id).orElseThrow(NoSuchDataException::new);
         if (existingItem.getOwner().getId() != userId) {
@@ -79,11 +91,14 @@ public class ItemServiceImpl implements ItemService {
             if (item.getDescription() != null) {
                 existingItem.setDescription(item.getDescription());
             }
-            return ItemMapper.toItemDto(itemRepository.save(existingItem));
+            ItemDto itemToReturn = ItemMapper.toItemDto(itemRepository.save(existingItem));
+            log.info("PATCH /items/{} -> {}", id, itemToReturn);
+            return itemToReturn;
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<ItemDto> search(String text) {
         if (text.isBlank()) {
             return List.of();
@@ -91,7 +106,9 @@ public class ItemServiceImpl implements ItemService {
             List<ItemDto> items = itemRepository.findAllByAvailableTrueAndDescriptionContainingIgnoreCase(text)
                     .stream()
                     .map(ItemMapper::toItemDto).toList();
-            return setBookings(items);
+            List<ItemDto> itemsToReturn = setBookings(items);
+            log.info("GET /items/search?text={} -> {}", text, itemsToReturn);
+            return itemsToReturn;
         }
     }
 
@@ -109,6 +126,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto addComment(CommentDto comment, long itemId, long userId) {
         Item item = itemRepository.findById(itemId).orElseThrow(NoSuchDataException::new);
         User author = userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
@@ -122,6 +140,8 @@ public class ItemServiceImpl implements ItemService {
         commentToSave.setCreated(LocalDateTime.now());
         commentToSave.setText(comment.getText());
         Comment saved = commentRepository.save(commentToSave);
-        return CommentMapper.toCommentDto(saved);
+        CommentDto commentToReturn = CommentMapper.toCommentDto(saved);
+        log.info("POST /items/{}/comment -> {}", itemId, commentToReturn);
+        return commentToReturn;
     }
 }

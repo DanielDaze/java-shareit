@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.comment;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -22,10 +23,12 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @ToString.Exclude
     private Item item;
 
     @ManyToOne
     @JoinColumn(name = "author_id")
+    @ToString.Exclude
     private User author;
 
     @Column(name = "creation_date")
