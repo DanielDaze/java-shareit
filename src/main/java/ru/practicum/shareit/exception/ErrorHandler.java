@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.*;
-import ru.practicum.shareit.exception.Error;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice
 @Slf4j
@@ -58,5 +58,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Error handleIllegalArgumentException(final IllegalArgumentException e) {
         return new Error("Unknown state: UNSUPPORTED_STATUS");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Error handleJdbcSQLIntegrityConstraintViolationException(final SQLIntegrityConstraintViolationException e) {
+        log.error("Пользователь пытался создать конфликтующий объект");
+        return new Error(e.getMessage());
     }
 }

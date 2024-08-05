@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking approve(long bookingId, boolean approved, long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NoSuchDataException::new);
         if (booking.getItem().getOwner().getId() != userId) {
-            throw new NoSuchDataException("Вы не можете изменить статус этой брони!");
+            throw new ItemUnavailableException("Вы не можете изменить статус этой брони!");
         }
         if (booking.getStatus() == BookingStatus.APPROVED) {
             throw new ItemUnavailableException("Вы уже подтвердили эту бронь!");

@@ -34,6 +34,8 @@ public class ItemDto {
 
     private List<CommentDto> comments;
 
+    private Long requestId;
+
     public ItemDto(long id, String name, String description, Boolean available) {
         this.id = id;
         this.name = name;

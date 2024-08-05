@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
 import ru.practicum.shareit.user.User;
@@ -19,6 +20,7 @@ public class ItemRequest {
     private long id;
 
     @Column(name = "description")
+    @NotBlank
     private String description;
 
     @ManyToOne

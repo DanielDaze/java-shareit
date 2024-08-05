@@ -18,6 +18,8 @@ import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
@@ -34,6 +36,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -70,6 +73,10 @@ public class ItemServiceImpl implements ItemService {
         User owner = Optional.of(userService.get(userId)).orElseThrow(NoSuchDataException::new);
         Item itemToSave = ItemMapper.toItem(item);
         itemToSave.setOwner(owner);
+        if (item.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.findById(item.getRequestId()).orElseThrow(NoSuchDataException::new);
+            itemToSave.setRequest(itemRequest);
+        }
         ItemDto itemToReturn =  ItemMapper.toItemDto(itemRepository.save(itemToSave));
         log.info("POST /items -> {}", itemToReturn);
         return itemToReturn;
