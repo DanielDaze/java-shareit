@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Marker.Create;
+import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.Collection;
@@ -29,9 +30,9 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto get(@PathVariable("id") long id) {
-        log.info("GET /items <- {}", id);
-        return itemService.get(id);
+    public ItemDto get(@PathVariable("id") long id, @RequestHeader(USER_ID_HEADER) Long userId) {
+        log.info("GET /items/{}", id);
+        return itemService.get(id, userId);
     }
 
     @PostMapping
@@ -44,7 +45,7 @@ public class ItemController {
     @PatchMapping("/{id}")
     public ItemDto update(@RequestBody ItemDto item, @PathVariable("id") long id,
                           @RequestHeader(name = USER_ID_HEADER) long userId) {
-        log.info("PATCH /items/{} <- {} with userId {}", item, id, userId);
+        log.info("PATCH /items/{} <- {} with userId {}", id, item, userId);
         return itemService.update(item, id, userId);
     }
 
@@ -52,5 +53,11 @@ public class ItemController {
     public Collection<ItemDto> search(@RequestParam("text") String text) {
         log.info("GET /items/search?text={}", text);
         return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@Valid @RequestBody CommentDto comment, @PathVariable long itemId, @RequestHeader(USER_ID_HEADER) long userId) {
+        log.info("POST /items/{}/comment", itemId);
+        return itemService.addComment(comment, itemId, userId);
     }
 }
