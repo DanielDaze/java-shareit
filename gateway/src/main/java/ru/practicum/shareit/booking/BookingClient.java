@@ -3,6 +3,9 @@ package ru.practicum.shareit.booking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -32,12 +35,13 @@ public class BookingClient extends BaseClient {
         return post("", userId, booking);
     }
 
-    public ResponseEntity<Object> approve(long bookingId, boolean approved, long userId) {
-        // TODO
-        Map<String, Object> parameters = Map.of(
-                "approved", String.valueOf(approved)
-        );
-        return patch("/" + bookingId, userId, parameters);
+    public ResponseEntity<Object> approve(Long userId, Long bookingId, Boolean approved) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Sharer-User-Id", userId.toString());
+
+        HttpEntity<Object> entity = new HttpEntity<>("body", headers);
+
+        return rest.exchange("http://localhost:9090/bookings/" + bookingId + "?approved=" + approved, HttpMethod.PATCH, entity, Object.class);
     }
 
     public ResponseEntity<Object> get(long bookingId, long userId) {

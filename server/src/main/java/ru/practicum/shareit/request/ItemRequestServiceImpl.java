@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NoSuchDataException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
@@ -25,6 +26,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
 
     @Override
+    @Transactional
     public ItemRequest create(ItemRequest request, long userId) {
         User requestor = userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
         request.setRequestor(requestor);
@@ -33,6 +35,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemRequestDto find(long requestId) {
         ItemRequest request = itemRequestRepository.findById(requestId).orElseThrow(NoSuchDataException::new);
         List<Item> items = itemRepository.findAllByRequestId(requestId);
@@ -42,6 +45,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<ItemRequestDto> findAllByUserId(long userId) {
         userRepository.findById(userId).orElseThrow(NoSuchDataException::new);
         List<ItemRequest> requests = itemRequestRepository.getAllByRequestorIdOrderByCreatedDesc(userId);
@@ -56,6 +60,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<ItemRequest> findAllOther(long userId, long from, int size) {
         Page<ItemRequest> page = itemRequestRepository.getAllByRequestorIdNotOrderByCreatedDesc(userId, PageRequest.ofSize(size));
         List<ItemRequest> requests = page.getContent();
