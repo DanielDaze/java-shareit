@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,8 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @Validated(Create.class)
-    public User create(@Valid User user) {
+    public User create(User user) {
         User userToReturn = userRepository.save(user);
         log.info("POST /users -> {}", userToReturn);
         return userToReturn;

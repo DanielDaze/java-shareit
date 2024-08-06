@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.Marker;
 import ru.practicum.shareit.booking.dto.BookingInfo;
 
 import java.util.List;
@@ -17,13 +18,13 @@ import java.util.List;
 @NoArgsConstructor
 public class ItemDto {
     private long id;
-    @NotBlank(groups = Create.class)
+    @NotBlank(groups = Marker.Create.class)
     private String name;
 
-    @NotBlank(groups = Create.class)
+    @NotBlank(groups = Marker.Create.class)
     private String description;
 
-    @NotNull(groups = Create.class)
+    @NotNull(groups = Marker.Create.class)
     private Boolean available;
 
     private BookingInfo lastBooking;

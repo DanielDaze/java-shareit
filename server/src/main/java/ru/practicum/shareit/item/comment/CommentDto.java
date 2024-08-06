@@ -1,13 +1,11 @@
 package ru.practicum.shareit.item.comment;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
 public class CommentDto {
-    @NotEmpty
     private String text;
 
     private long id;

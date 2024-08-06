@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS ITEMS (
     description VARCHAR NOT NULL,
     is_available BOOLEAN NOT NULL,
     owner_id BIGINT NOT NULL REFERENCES USERS (ID),
-    request_id BIGINT NOT NULL,
+    request_id BIGINT,
     CONSTRAINT pk_item PRIMARY KEY (id)
 );
 
