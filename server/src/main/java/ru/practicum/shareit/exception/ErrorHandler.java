@@ -1,6 +1,5 @@
 package ru.practicum.shareit.exception;
 
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,13 +11,6 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error handleMethodArgumentNotValidException(final ConstraintViolationException e) {
-        log.error("Пользователь передал неверные данные для создания объекта");
-        return new Error(e.getMessage());
-    }
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public Error handleDuplicatedDataException(final DuplicatedDataException e) {
