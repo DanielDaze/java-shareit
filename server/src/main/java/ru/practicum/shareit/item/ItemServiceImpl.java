@@ -77,7 +77,7 @@ public class ItemServiceImpl implements ItemService {
             ItemRequest itemRequest = itemRequestRepository.findById(item.getRequestId()).orElseThrow(NoSuchDataException::new);
             itemToSave.setRequest(itemRequest);
         }
-        ItemDto itemToReturn =  ItemMapper.toItemDto(itemRepository.save(itemToSave));
+        ItemDto itemToReturn = ItemMapper.toItemDto(itemRepository.save(itemToSave));
         log.info("POST /items -> {}", itemToReturn);
         return itemToReturn;
     }
