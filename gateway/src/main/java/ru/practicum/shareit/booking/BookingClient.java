@@ -41,7 +41,7 @@ public class BookingClient extends BaseClient {
 
         HttpEntity<Object> entity = new HttpEntity<>("body", headers);
 
-        return rest.exchange("http://localhost:9090/bookings/" + bookingId + "?approved=" + approved, HttpMethod.PATCH, entity, Object.class);
+        return rest.exchange(bookingId + "?approved=" + approved, HttpMethod.PATCH, entity, Object.class);
     }
 
     public ResponseEntity<Object> get(long bookingId, long userId) {
