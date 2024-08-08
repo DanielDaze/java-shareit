@@ -55,7 +55,7 @@ public class ErrorHandlerTest {
     }
 
     @Test
-    void handleItemNotAvailableException() throws Exception{
+    void handleItemNotAvailableException() throws Exception {
         Mockito.when(service.getAll()).thenThrow(ItemUnavailableException.class);
         mvc.perform(get("/users")
                         .characterEncoding(StandardCharsets.UTF_8)

@@ -43,7 +43,7 @@ public class BookingServiceTest {
     ItemRepository itemRepository;
 
     @Test
-    void BookingInfoMapperTest() {
+    void bookingInfoMapperTest() {
         Booking booking = new Booking();
         booking.setId(1L);
         booking.setStatus(BookingStatus.APPROVED);
