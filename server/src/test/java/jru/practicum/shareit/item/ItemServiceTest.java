@@ -17,7 +17,6 @@ import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
@@ -46,8 +45,6 @@ public class ItemServiceTest {
     private final BookingRepository bookingRepository;
     @MockBean
     private final CommentRepository commentRepository;
-    @MockBean
-    private final ItemRequestRepository itemRequestRepository;
 
     @Test
     void create() {
