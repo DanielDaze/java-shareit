@@ -12,13 +12,6 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @Slf4j
 public class ErrorHandler {
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Error handleDuplicatedDataException(final DuplicatedDataException e) {
-        log.error("Во время регистрации пользователь передал данные, которые были использованы до него");
-        return new Error(e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error handleNoSuchDataException(final NoSuchDataException e) {
         log.error("Пользователь попытался найти несуществующий объект");

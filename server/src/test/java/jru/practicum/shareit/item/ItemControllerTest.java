@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.ShareItServer;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.ItemService;
+import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.nio.charset.StandardCharsets;
@@ -125,6 +126,25 @@ public class ItemControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header("X-Sharer-User-Id", 1))
                 .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void addCommentTest() throws Exception {
+        CommentDto comment = new CommentDto();
+        comment.setText("text");
+
+        CommentDto created = new CommentDto();
+        created.setId(1);
+
+        when(itemService.addComment(comment, 1, 1)).thenReturn(created);
+
+        mvc.perform(post("/items/1/comment")
+                        .content(mapper.writeValueAsString(comment))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1))
+                .andExpect(jsonPath("$.id", is(1)));
     }
 }
 

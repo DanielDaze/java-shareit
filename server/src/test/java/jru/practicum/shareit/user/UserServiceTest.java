@@ -55,6 +55,10 @@ public class UserServiceTest {
 
     @Test
     void update() {
+        User old = new User();
+        old.setId(1);
+        old.setName("old_name");
+        old.setEmail("old_mail@mail.com");
         User newUser = new User();
         newUser.setName("new_name");
         newUser.setEmail("new_mail@mail.com");
@@ -63,6 +67,8 @@ public class UserServiceTest {
         updated.setName(newUser.getName());
         updated.setEmail(newUser.getEmail());
         when(userRepository.save(newUser)).thenReturn(updated);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(old));
+        Assertions.assertEquals(updated, userService.update(1, newUser));
     }
 
     @Test

@@ -9,10 +9,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import ru.practicum.shareit.ShareItServer;
+import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.exception.WrongUserException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemServiceImpl;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
@@ -159,5 +164,114 @@ public class ItemServiceTest {
         when(itemRepository.save(item)).thenReturn(item);
 
         Assertions.assertEquals(newItemDto, itemService.update(newItemDto, 1, 1));
+    }
+
+    @Test
+    void addCommentTest() {
+        User owner = new User();
+        owner.setId(1);
+        owner.setName("name");
+        owner.setEmail("email@mail.com");
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("name");
+        itemDto.setDescription("description");
+        itemDto.setAvailable(false);
+
+        Item item = new Item();
+        item.setId(1L);
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setOwner(owner);
+
+        Item newItem = new Item();
+        newItem.setId(item.getId());
+        newItem.setName("new_name");
+        newItem.setDescription("new_description");
+        newItem.setAvailable(true);
+        item.setOwner(owner);
+
+        Booking booking = new Booking();
+        booking.setId(1L);
+        booking.setItem(item);
+        booking.setStatus(BookingStatus.WAITING);
+
+        Comment commentToSave = new Comment();
+        commentToSave.setItem(item);
+        commentToSave.setCreated(LocalDateTime.now());
+        commentToSave.setText("text");
+
+        Comment saved = new Comment();
+        saved.setItem(item);
+        saved.setCreated(LocalDateTime.now());
+        saved.setText("text");
+        saved.setId(1);
+        saved.setAuthor(owner);
+
+        CommentDto toSave = new CommentDto();
+        toSave.setText("text");
+
+        ItemDto newItemDto = ItemMapper.toItemDto(newItem);
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(owner));
+        when(bookingRepository.findTop1BookingByItemIdAndBookerIdAndEndBeforeAndStatusOrderByEndDesc(
+                anyLong(), anyLong(), any(LocalDateTime.class), any(BookingStatus.class))).thenReturn(Optional.of(booking));
+        when(commentRepository.save(any())).thenReturn(saved);
+
+        Assertions.assertEquals(CommentMapper.toCommentDto(saved), itemService.addComment(toSave,1, 1));
+    }
+
+    @Test
+    void wrongUserExceptionThrow() {
+        User owner = new User();
+        owner.setId(1);
+        owner.setName("name");
+        owner.setEmail("email@mail.com");
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("name");
+        itemDto.setDescription("description");
+        itemDto.setAvailable(false);
+
+        Item item = new Item();
+        item.setId(1L);
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setOwner(owner);
+
+        Item newItem = new Item();
+        newItem.setId(item.getId());
+        newItem.setName("new_name");
+        newItem.setDescription("new_description");
+        newItem.setAvailable(true);
+        item.setOwner(owner);
+
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        Assertions.assertThrows(WrongUserException.class, () -> itemService.update(itemDto, 1, 2));
+    }
+
+    @Test
+    void searchTestBlank() {
+        User owner = new User();
+        owner.setId(1);
+        owner.setName("name");
+        owner.setEmail("email@mail.com");
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("name");
+        itemDto.setDescription("description");
+        itemDto.setAvailable(false);
+
+        Item item = new Item();
+        item.setId(1L);
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setOwner(owner);
+        when(itemRepository.findAllByAvailableTrueAndDescriptionContainingIgnoreCase(anyString())).thenReturn(List.of());
+
+        Assertions.assertEquals(0, itemService.search("").size());
     }
 }
