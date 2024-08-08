@@ -667,4 +667,41 @@ public class BookingServiceTest {
 
         Assertions.assertEquals(1, bookingService.getByOwnerId(1L, BookingSearch.ALL).size());
     }
+
+    @Test
+    void noSuchDataExceptionTest() {
+        LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
+        LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
+
+        User owner = new User();
+        owner.setId(1L);
+        owner.setName("owner");
+        owner.setEmail("mail@mail.com");
+
+        Item item = new Item();
+        item.setId(1L);
+        item.setName("name");
+        item.setDescription("desc");
+        item.setAvailable(true);
+        item.setOwner(owner);
+
+        User booker = new User();
+        booker.setId(2L);
+        booker.setName("booker");
+        booker.setEmail("booker@email.com");
+
+        Booking booking = new Booking();
+        booking.setId(1L);
+        booking.setStart(start);
+        booking.setEnd(end);
+        booking.setItem(item);
+        booking.setBooker(booker);
+        booking.setStatus(BookingStatus.APPROVED);
+
+        BookingDto dto = new BookingDto(start, end, 1L);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(dto.getItemId())).thenReturn(Optional.of(item));
+
+        Assertions.assertThrows(NoSuchDataException.class, () -> bookingService.create(dto, 1));
+    }
 }

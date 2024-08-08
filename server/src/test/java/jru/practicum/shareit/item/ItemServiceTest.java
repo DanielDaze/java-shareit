@@ -209,6 +209,7 @@ public class ItemServiceTest {
         saved.setId(1);
         saved.setAuthor(owner);
 
+
         CommentDto toSave = new CommentDto();
         toSave.setText("text");
 
@@ -273,5 +274,43 @@ public class ItemServiceTest {
         when(itemRepository.findAllByAvailableTrueAndDescriptionContainingIgnoreCase(anyString())).thenReturn(List.of());
 
         Assertions.assertEquals(0, itemService.search("").size());
+    }
+
+    @Test
+    void searchTest() {
+        User owner = new User();
+        owner.setId(1);
+        owner.setName("name");
+        owner.setEmail("email@mail.com");
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("name");
+        itemDto.setDescription("description");
+        itemDto.setAvailable(false);
+
+
+        Item item = new Item();
+        item.setId(1L);
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setOwner(owner);
+
+        Booking booking = new Booking();
+        booking.setId(1L);
+        booking.setItem(item);
+        booking.setStatus(BookingStatus.WAITING);
+
+        User booker = new User();
+        booker.setId(2L);
+        booker.setName("booker");
+        booker.setEmail("booker@email.com");
+
+        booking.setBooker(booker);
+
+        when(itemRepository.findAllByAvailableTrueAndDescriptionContainingIgnoreCase(anyString())).thenReturn(List.of(item));
+        when(bookingRepository.findTop1BookingByItem_IdAndStartBeforeAndStatusOrderByEndDesc(anyLong(), any(LocalDateTime.class), any(BookingStatus.class))).thenReturn(Optional.of(booking));
+        when(bookingRepository.findTop1BookingByItem_IdAndStartAfterAndStatusOrderByEndAsc(anyLong(), any(LocalDateTime.class), any(BookingStatus.class))).thenReturn(Optional.empty());
+        Assertions.assertEquals(1, itemService.search("desc").size());
     }
 }
