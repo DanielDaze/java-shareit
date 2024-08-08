@@ -30,6 +30,7 @@ public class BookingController {
     public ResponseEntity<Object> approve(@RequestHeader(USER_ID_HEADER) Long userId,
                                           @PathVariable Long bookingId,
                                           @RequestParam("approved") Boolean approved) {
+        log.info("PATCH /bookings/{} <- with approved {} and userId {}", bookingId, approved, userId);
         return bookingClient.approve(userId, bookingId, approved);
     }
 
