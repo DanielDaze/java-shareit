@@ -10,8 +10,6 @@ import ru.practicum.shareit.Marker;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import java.util.Collection;
-
 /**
  * TODO Sprint add-controllers.
  */
