@@ -1,7 +1,9 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.Booking;
 
+@UtilityClass
 public class BookingMapper {
     public static Booking toBooking(BookingDto dto) {
         Booking booking = new Booking();
