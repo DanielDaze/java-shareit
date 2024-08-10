@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import ru.practicum.shareit.Marker;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 public class User {
     private long id;

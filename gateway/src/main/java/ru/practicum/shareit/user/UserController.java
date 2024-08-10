@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Marker;
 import ru.practicum.shareit.user.dto.User;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor

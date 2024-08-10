@@ -3,9 +3,6 @@ package ru.practicum.shareit.user;
 import jakarta.persistence.*;
 import lombok.Data;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Entity
 @Table(name = "USERS")

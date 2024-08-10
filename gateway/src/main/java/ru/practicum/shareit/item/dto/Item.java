@@ -4,9 +4,6 @@ import lombok.*;
 import ru.practicum.shareit.request.dto.ItemRequest;
 import ru.practicum.shareit.user.dto.User;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 public class Item {
     private Long id;

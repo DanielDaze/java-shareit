@@ -10,9 +10,6 @@ import java.time.LocalDateTime;
 
 import static ru.practicum.shareit.booking.BookingStatus.WAITING;
 
-/**
- * TODO Sprint add-bookings.
- */
 @Data
 @Entity
 @Table(name = "BOOKINGS")
