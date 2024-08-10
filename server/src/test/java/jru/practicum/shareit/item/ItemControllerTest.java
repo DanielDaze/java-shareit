@@ -40,7 +40,7 @@ public class ItemControllerTest {
     final ItemDto itemToReturn = new ItemDto();
 
     @Test
-    void create() throws Exception {
+    void createReturnsCreatedItemId1() throws Exception {
         itemToSave.setName("name");
         itemToSave.setDescription("description");
         itemToSave.setAvailable(false);
@@ -65,7 +65,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void getAll() throws Exception {
+    void getAllReturnsListSize1() throws Exception {
         when(itemService.getAllByUserId(1)).thenReturn(List.of(itemToReturn));
         mvc.perform(get("/items")
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -87,7 +87,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void update() throws Exception {
+    void updateReturnsUpdatedItem() throws Exception {
         ItemDto newItem = new ItemDto();
         newItem.setName("new_name");
         newItem.setAvailable(true);
@@ -113,7 +113,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void search() throws Exception {
+    void searchReturnsListSize1() throws Exception {
         ItemDto itemWithDescReturn = new ItemDto();
         itemWithDescReturn.setName("cool_name");
         itemWithDescReturn.setDescription("hammer");
@@ -129,7 +129,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void addCommentTest() throws Exception {
+    void addCommentTestReturnsCreatedCommendId1() throws Exception {
         CommentDto comment = new CommentDto();
         comment.setText("text");
 

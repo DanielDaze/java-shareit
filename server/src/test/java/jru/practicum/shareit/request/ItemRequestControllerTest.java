@@ -38,7 +38,7 @@ public class ItemRequestControllerTest {
     MockMvc mvc;
 
     @Test
-    void create() throws Exception {
+    void createReturnsCreatedRequest() throws Exception {
         ItemRequest requestToCreate = new ItemRequest();
         requestToCreate.setDescription("desc");
 
@@ -60,7 +60,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    void getTest() throws Exception {
+    void getReturnsRequestId1() throws Exception {
         ItemRequest requestToCreate = new ItemRequest();
         requestToCreate.setDescription("desc");
 
@@ -80,7 +80,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    void findAllByUserIdTest() throws Exception {
+    void findAllByUserIdReturnsListSize1() throws Exception {
         ItemRequest requestToCreate = new ItemRequest();
         requestToCreate.setDescription("desc");
 
@@ -100,7 +100,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    void findAllOtherTest() throws Exception {
+    void findAllOtherReturnsSize0() throws Exception {
         ItemRequest requestToCreate = new ItemRequest();
         requestToCreate.setDescription("desc");
 

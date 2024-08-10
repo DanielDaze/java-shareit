@@ -38,7 +38,7 @@ public class ItemRequestServiceTest {
     ItemRepository itemRepository;
 
     @Test
-    void createTest() {
+    void createReturnsCreatedRequest() {
         final User userToReturn = new User();
         userToReturn.setId(1);
         userToReturn.setEmail("mail");
@@ -62,7 +62,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void findTest() {
+    void findReturnsRequestId1() {
         final User userToReturn = new User();
         userToReturn.setId(1);
         userToReturn.setEmail("mail");
@@ -93,7 +93,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void findAllByUserIdTest() {
+    void findAllByUserIdReturnsListSize1() {
         final User userToReturn = new User();
         userToReturn.setId(1);
         userToReturn.setEmail("mail");

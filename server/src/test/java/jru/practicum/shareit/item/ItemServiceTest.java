@@ -52,7 +52,7 @@ public class ItemServiceTest {
     private final CommentRepository commentRepository;
 
     @Test
-    void create() {
+    void createReturnsCreatedUser() {
         User owner = new User();
         owner.setId(1);
         owner.setName("name");
@@ -79,7 +79,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void get() {
+    void getReturnsUserId1() {
         User owner = new User();
         owner.setId(1);
         owner.setName("name");
@@ -111,7 +111,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void getAllByUserId() {
+    void getAllByUserIdReturnsListSize1() {
         User owner = new User();
         owner.setId(1);
         owner.setName("name");
@@ -135,7 +135,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void update() {
+    void updateReturnsUpdatedUserNewNameAndDescription() {
         User owner = new User();
         owner.setId(1);
         owner.setName("name");
@@ -167,7 +167,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void addCommentTest() {
+    void addCommentReturnsCreatedComment() {
         User owner = new User();
         owner.setId(1);
         owner.setName("name");
@@ -213,7 +213,7 @@ public class ItemServiceTest {
         CommentDto toSave = new CommentDto();
         toSave.setText("text");
 
-        ItemDto newItemDto = ItemMapper.toItemDto(newItem);
+        ItemMapper.toItemDto(newItem);
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         when(userRepository.findById(1L)).thenReturn(Optional.of(owner));
         when(bookingRepository.findTop1BookingByItemIdAndBookerIdAndEndBeforeAndStatusOrderByEndDesc(
@@ -224,7 +224,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void wrongUserExceptionThrow() {
+    void throwsWrongUserExceptionTest() {
         User owner = new User();
         owner.setId(1);
         owner.setName("name");
@@ -254,7 +254,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void searchTestBlank() {
+    void searchTestBlankReturnsEmptyList() {
         User owner = new User();
         owner.setId(1);
         owner.setName("name");
@@ -277,7 +277,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void searchTest() {
+    void searchReturnsListSize1() {
         User owner = new User();
         owner.setId(1);
         owner.setName("name");

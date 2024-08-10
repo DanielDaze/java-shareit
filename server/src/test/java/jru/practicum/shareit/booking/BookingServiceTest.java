@@ -10,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import ru.practicum.shareit.ShareItServer;
 import ru.practicum.shareit.booking.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingInfo;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.exception.DateConflictException;
 import ru.practicum.shareit.exception.ItemUnavailableException;
@@ -43,7 +42,7 @@ public class BookingServiceTest {
     ItemRepository itemRepository;
 
     @Test
-    void bookingInfoMapperTest() {
+    void bookingInfoMapperTestReturnsBookingInfo() {
         Booking booking = new Booking();
         booking.setId(1L);
         booking.setStatus(BookingStatus.APPROVED);
@@ -55,11 +54,11 @@ public class BookingServiceTest {
         user.setId(1L);
         booking.setItem(item);
         booking.setBooker(user);
-        BookingInfo info = BookingMapper.toBookingInfo(booking);
+        BookingMapper.toBookingInfo(booking);
     }
 
     @Test
-    void createBooking() {
+    void createBookingReturnsNewBookingId1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
         final BookingDto bookingToSave = new BookingDto(start, end, 1L);
@@ -90,7 +89,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void approve() {
+    void approveReturnsApprovedBooking() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -134,7 +133,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getTest() {
+    void getReturnsBookingId1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -170,7 +169,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByBookerId() {
+    void getByBookerIdReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -245,7 +244,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void dateConflictTest() {
+    void throwDateConflictTest() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 27, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 20, 11, 30);
 
@@ -273,7 +272,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByBookerIdPast() {
+    void getByBookerIdPastReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -309,7 +308,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByBookerIdCurrent() {
+    void getByBookerIdCurrentReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -345,7 +344,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByBookerIdFuture() {
+    void getByBookerIdFutureReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -381,7 +380,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByBookerIdRejected() {
+    void getByBookerIdRejectedReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -417,7 +416,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByBookerIdAll() {
+    void getByBookerIdAllReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -453,7 +452,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByOwnerId() {
+    void getByOwnerIdReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -489,7 +488,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByOwnerIdPast() {
+    void getByOwnerIdPastReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -525,7 +524,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByOwnerIdCurrent() {
+    void getByOwnerIdCurrentReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -561,7 +560,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByOwnerIdFuture() {
+    void getByOwnerIdFutureReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -597,7 +596,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByOwnerIdRejected() {
+    void getByOwnerIdRejectedReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -633,7 +632,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getByOwnerIdCurrentAll() {
+    void getByOwnerIdCurrentAllReturnsListSize1() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -669,7 +668,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void noSuchDataExceptionTest() {
+    void throwNoSuchDataException() {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 

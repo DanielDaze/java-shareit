@@ -40,7 +40,7 @@ public class UserControllerTest {
     final User userToReturn = new User();
 
     @Test
-    void createUser() throws Exception {
+    void createReturnsCreatedUser() throws Exception {
         userToSave.setName("name");
         userToSave.setEmail("mail@mail.com");
 
@@ -61,7 +61,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void getAll() throws Exception {
+    void getAllReturnsListSize1() throws Exception {
         when(userService.getAll()).thenReturn(List.of(userToReturn));
         mvc.perform(get("/users")
                 .characterEncoding(StandardCharsets.UTF_8)
@@ -80,7 +80,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void update() throws Exception {
+    void updateReturnsUpdatedUserWithNewNameAndEmail() throws Exception {
         User newUser = new User();
         newUser.setName("new_name");
         newUser.setEmail("new_mail@mail.com");
@@ -102,7 +102,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deleteUserDto() throws Exception {
+    void deleteVerifiesInvocationOnce() throws Exception {
         mvc.perform(delete("/users/1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

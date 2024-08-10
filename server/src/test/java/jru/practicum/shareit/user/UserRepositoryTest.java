@@ -16,7 +16,7 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    void save() {
+    void saveReturnsCreatedUser() {
         User userToSave = new User();
         userToSave.setName("name");
         userToSave.setEmail("email@email.com");
@@ -26,7 +26,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void update() {
+    void updateReturnsUpdatedUser() {
         User updated = new User();
         updated.setId(1);
         updated.setName("new_name");

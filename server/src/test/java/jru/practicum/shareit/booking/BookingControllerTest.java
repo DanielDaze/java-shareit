@@ -39,7 +39,7 @@ public class BookingControllerTest {
     MockMvc mvc;
 
     @Test
-    void createBooking() throws Exception {
+    void createBookingReturnsBookingId1() throws Exception {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
         final BookingDto bookingToSave = new BookingDto(start, end, 1L);
@@ -75,7 +75,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void approve() throws Exception {
+    void approveReturnsApprovedBooking() throws Exception {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
         Booking approved = new Booking();
@@ -96,7 +96,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void getTest() throws Exception {
+    void getReturnsBookingId1() throws Exception {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -116,7 +116,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void getByBookerIdTest() throws Exception {
+    void getByBookerIdTestReturnsListSize1() throws Exception {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 
@@ -136,7 +136,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void getByOwnerIdTest() throws Exception {
+    void getByOwnerIdReturnsListSize1() throws Exception {
         LocalDateTime start = LocalDateTime.of(2024, 11, 20, 11, 30, 0);
         LocalDateTime end = LocalDateTime.of(2024, 11, 27, 11, 30);
 

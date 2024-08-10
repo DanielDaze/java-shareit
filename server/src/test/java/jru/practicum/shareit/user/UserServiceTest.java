@@ -32,7 +32,7 @@ public class UserServiceTest {
     final User userToReturn = new User();
 
     @Test
-    void create() {
+    void createReturnsCreatedUser() {
         userToSave.setName("name");
         userToSave.setEmail("mail@mail.com");
 
@@ -45,7 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void getAndGetAll() {
+    void getAllReturnsListSize1() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(userToReturn));
         when(userRepository.findAll()).thenReturn(List.of(userToReturn));
 
@@ -54,7 +54,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void update() {
+    void updateReturnsUpdatedUserWithNewNameAndEmail() {
         User old = new User();
         old.setId(1);
         old.setName("old_name");
@@ -72,7 +72,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void delete() {
+    void deleteReturnsInvocationOnce() {
         userService.delete(1);
 
         verify(userRepository).deleteById(1L);
